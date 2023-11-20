@@ -26,15 +26,19 @@ export function ArbitrarySign() {
         const pubKey = Buffer.from(result.response.pub_key.value, "base64");
         const signature = Buffer.from(result.response.signature, "base64");
         const verification = verifyADR36Amino(
-          'inj',
+          "inj",
           recentWallet?.account.address as string,
           bytes,
           pubKey,
           signature,
           "ethsecp256k1"
-        )
+        );
         console.log("verification result:", verification);
-        alert(verification ? "Signature successfully verified" : "Signature verification failed");
+        alert(
+          verification
+            ? "Signature successfully verified"
+            : "Signature verification failed"
+        );
         console.log("####################################");
         console.groupEnd();
       })
@@ -46,8 +50,14 @@ export function ArbitrarySign() {
   return (
     <>
       <h2>Sign arbitrary</h2>
-      <textarea value={data} onChange={(e) => setData(e.target.value)} style={{ width: "450px", height: "100px" }} />
-      <button onClick={onSign}>Sign</button>
+      <textarea
+        value={data}
+        onChange={(e) => setData(e.target.value)}
+        style={{ width: "450px", height: "100px" }}
+      />
+      <button disabled={!recentWallet?.account.address} onClick={onSign}>
+        Sign
+      </button>
     </>
   );
 }
