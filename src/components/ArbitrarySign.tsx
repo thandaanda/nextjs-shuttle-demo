@@ -9,6 +9,7 @@ import { verifyADR36Amino } from "@keplr-wallet/cosmos";
 export function ArbitrarySign() {
   const { signArbitrary, recentWallet, } = useShuttle();
   const wallet = useWallet();
+  const [verification, setVerification] = useState(0);
 
   const [data, setData] = useState("Hello world");
 
@@ -35,6 +36,7 @@ export function ArbitrarySign() {
           "ethsecp256k1"
         );
         console.log("verification result:", verification);
+        setVerification(verification ? 2 : 1);
         alert(
           verification
             ? "Signature successfully verified"
@@ -90,6 +92,8 @@ export function ArbitrarySign() {
       <button disabled={!recentWallet?.account.address} onClick={onSign}>
         Sign
       </button>
+      {verification === 1 && <p>Signature verification failed</p>}
+      {verification === 2 && <p>Signature successfully verified</p>}
     </>
   );
 }
