@@ -10,6 +10,7 @@ export function ArbitrarySign() {
   const { signArbitrary, recentWallet, } = useShuttle();
   const wallet = useWallet();
   const [verification, setVerification] = useState(0);
+  const[result, setResult] = useState<any>(null);
 
   const [data, setData] = useState("Hello world");
 
@@ -25,6 +26,7 @@ export function ArbitrarySign() {
       data: bytes,
     })
       .then((result) => {
+        setResult(result);
         const pubKey = Buffer.from(result.response.pub_key.value, "base64");
         const signature = Buffer.from(result.response.signature, "base64");
         const verification = verifyADR36Amino(
@@ -94,6 +96,11 @@ export function ArbitrarySign() {
       </button>
       {verification === 1 && <p>Signature verification failed</p>}
       {verification === 2 && <p>Signature successfully verified</p>}
+      {result && (
+        <div>
+          {JSON.stringify(result, null, 2)}
+        </div>
+      )}
     </>
   );
 }
