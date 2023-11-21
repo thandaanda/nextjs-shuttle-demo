@@ -7,22 +7,23 @@ import useWallet from "@/hooks/useWallet";
 import { verifyADR36Amino } from "@keplr-wallet/cosmos";
 
 export function ArbitrarySign() {
-  const { signArbitrary, recentWallet } = useShuttle();
+  const { signArbitrary, recentWallet, } = useShuttle();
   const wallet = useWallet();
 
   const [data, setData] = useState("Hello world");
 
   const onSign = () => {
     const bytes = Buffer.from(data, "utf-8");
+    // window.leap
+    //   ?.signArbitrary(
+    //     recentWallet?.network.chainId as string,
+    //     recentWallet?.account.address as string,
+    //     data
+    //   )
     signArbitrary({
-      wallet,
       data: bytes,
     })
-      .then(async (result) => {
-        console.log("sign arbitrary result", result);
-
-        console.group("###### verifying signature.... ########");
-
+      .then((result) => {
         const pubKey = Buffer.from(result.response.pub_key.value, "base64");
         const signature = Buffer.from(result.response.signature, "base64");
         const verification = verifyADR36Amino(
@@ -45,6 +46,37 @@ export function ArbitrarySign() {
       .catch((error) => {
         console.error("sign arbitrary error", error);
       });
+    // signArbitrary({
+    //   wallet,
+    //   data: bytes,
+    // })
+    //   .then(async (result) => {
+    //     console.log("sign arbitrary result", result);
+
+    //     console.group("###### verifying signature.... ########");
+
+    //     const pubKey = Buffer.from(result.response.pub_key.value, "base64");
+    //     const signature = Buffer.from(result.response.signature, "base64");
+    //     const verification = verifyADR36Amino(
+    //       "inj",
+    //       recentWallet?.account.address as string,
+    //       bytes,
+    //       pubKey,
+    //       signature,
+    //       "ethsecp256k1"
+    //     );
+    //     console.log("verification result:", verification);
+    //     alert(
+    //       verification
+    //         ? "Signature successfully verified"
+    //         : "Signature verification failed"
+    //     );
+    //     console.log("####################################");
+    //     console.groupEnd();
+    //   })
+    //   .catch((error) => {
+    //     console.error("sign arbitrary error", error);
+    //   });
   };
 
   return (
