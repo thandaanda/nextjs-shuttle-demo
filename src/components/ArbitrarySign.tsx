@@ -7,10 +7,10 @@ import useWallet from "@/hooks/useWallet";
 import { verifyADR36Amino } from "@keplr-wallet/cosmos";
 
 export function ArbitrarySign() {
-  const { signArbitrary, recentWallet, } = useShuttle();
+  const { signArbitrary, recentWallet, verifyArbitrary } = useShuttle();
   const wallet = useWallet();
   const [verification, setVerification] = useState(0);
-  const[result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<any>(null);
 
   const [data, setData] = useState("Hello world");
 
@@ -25,62 +25,27 @@ export function ArbitrarySign() {
     signArbitrary({
       data: bytes,
     })
-      .then((result) => {
+      .then(async (result) => {
         setResult(result);
-        const pubKey = Buffer.from(result.response.pub_key.value, "base64");
-        const signature = Buffer.from(result.response.signature, "base64");
-        const verification = verifyADR36Amino(
-          "inj",
-          recentWallet?.account.address as string,
-          bytes,
-          pubKey,
-          signature,
-          "ethsecp256k1"
-        );
-        console.log("verification result:", verification);
-        setVerification(verification ? 2 : 1);
-        alert(
-          verification
-            ? "Signature successfully verified"
-            : "Signature verification failed"
-        );
-        console.log("####################################");
-        console.groupEnd();
+        try {
+          await verifyArbitrary({
+            data: bytes,
+            signResult: result,
+          })
+          console.log("verification result:", verification);
+          setVerification(verification ? 2 : 1);
+          alert(
+            verification
+              ? "Signature successfully verified"
+              : "Signature verification failed"
+          );
+          console.log("####################################");
+          console.groupEnd();
+        } catch (error) {}
       })
       .catch((error) => {
         console.error("sign arbitrary error", error);
       });
-    // signArbitrary({
-    //   wallet,
-    //   data: bytes,
-    // })
-    //   .then(async (result) => {
-    //     console.log("sign arbitrary result", result);
-
-    //     console.group("###### verifying signature.... ########");
-
-    //     const pubKey = Buffer.from(result.response.pub_key.value, "base64");
-    //     const signature = Buffer.from(result.response.signature, "base64");
-    //     const verification = verifyADR36Amino(
-    //       "inj",
-    //       recentWallet?.account.address as string,
-    //       bytes,
-    //       pubKey,
-    //       signature,
-    //       "ethsecp256k1"
-    //     );
-    //     console.log("verification result:", verification);
-    //     alert(
-    //       verification
-    //         ? "Signature successfully verified"
-    //         : "Signature verification failed"
-    //     );
-    //     console.log("####################################");
-    //     console.groupEnd();
-    //   })
-    //   .catch((error) => {
-    //     console.error("sign arbitrary error", error);
-    //   });
   };
 
   return (
@@ -96,11 +61,7 @@ export function ArbitrarySign() {
       </button>
       {verification === 1 && <p>Signature verification failed</p>}
       {verification === 2 && <p>Signature successfully verified</p>}
-      {result && (
-        <div>
-          {JSON.stringify(result, null, 2)}
-        </div>
-      )}
+      {result && <div>{JSON.stringify(result, null, 2)}</div>}
     </>
   );
 }
