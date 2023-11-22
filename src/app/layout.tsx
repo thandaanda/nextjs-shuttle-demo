@@ -3,7 +3,8 @@
 import {
   KeplrExtensionProvider,
   MetamaskExtensionProvider,
-  LeapCosmosExtensionProvider, ShuttleProvider, LeapCosmosMobileProvider, KeplrMobileProvider
+  LeapCosmosExtensionProvider, ShuttleProvider, LeapCosmosMobileProvider, KeplrMobileProvider,
+  MetamaskMobileProvider
 } from "@delphi-labs/shuttle-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
@@ -37,6 +38,11 @@ const mobileProviders = [
     networks: [INJECTIVE_TESTNET],
   }),
   new KeplrMobileProvider({
+    networks: [
+      INJECTIVE_TESTNET,
+    ],
+  }),
+  new MetamaskMobileProvider({
     networks: [
       INJECTIVE_TESTNET,
     ],
