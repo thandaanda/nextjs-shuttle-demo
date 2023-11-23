@@ -17,6 +17,9 @@ export default function Header() {
   const [qrCodeUrl, setQrCodeUrl] = useState("");
   const wallet = useWallet();
 
+  console.log(extensionProviders.map((extensionProvider) => extensionProvider.id));
+  console.log(mobileProviders.map((mobileProvider) => mobileProvider.id));
+
   return (
     <>
       <header>
@@ -95,7 +98,7 @@ export default function Header() {
 
         {wallet && (
           <div>
-            <p>Address: {wallet.account.address}</p>
+            <p>Address: {wallet.account.address} {wallet.providerId}</p>
             <button onClick={() => disconnectWallet(wallet)}>Disconnect</button>
           </div>
         )}
